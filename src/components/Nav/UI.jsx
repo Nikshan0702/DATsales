@@ -6,7 +6,8 @@ import HeroSection from './HeroSection';
 import Signin from '../User/Signin';
 import FashionDashboard from './FashionDashboard';
 import Footer from './Footer';
-
+import Support from '../support/Support';
+import BrandPartners from '../Banners/BrandPartners';
 export default function UI() {
   // ... (keep your existing state and ref declarations)
 
@@ -15,7 +16,7 @@ export default function UI() {
       <FashionDashboard />
       
       {/* Explore More Banner */}
-      <div className="bg-gradient-to-r from-white py-12 sm:py-16">
+      {/* <div className="bg-gradient-to-r from-white py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <svg 
             className="mx-auto h-8 w-8 text-pink-600" 
@@ -40,8 +41,10 @@ export default function UI() {
           </blockquote>
         </div>
       </div>
-      <div className="my-6"></div>
+      <div className="my-6"></div> */}
       <HeroSection />
+      <BrandPartners />
+      <Support />
       
       <Footer />
     </div>

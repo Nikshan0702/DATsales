@@ -16,7 +16,7 @@ export default function HeroSection() {
       description: "Up to 50% off on new arrivals",
       buttonText: "Shop Now",
       buttonLink: "/summer-collection",
-      image: "/show.jpg",
+      image: "/ui1.jpg",
       bgColor: "bg-gradient-to-r from-amber-100/30 to-rose-100/30",
       textColor: "text-white",
       overlay: "bg-black/40"
@@ -28,7 +28,7 @@ export default function HeroSection() {
       description: "Get 30% off on selected items",
       buttonText: "Grab Deals",
       buttonLink: "/flash-sale",
-      image: "/show3.jpg",
+      image: "/ui2.jpg",
       bgColor: "bg-gradient-to-r from-blue-50/30 to-purple-50/30",
       textColor: "text-white",
       overlay: "bg-black/40"
@@ -40,7 +40,7 @@ export default function HeroSection() {
       description: "Elevate your style with our collection",
       buttonText: "Explore",
       buttonLink: "/accessories",
-      image: "/show3.jpg", 
+      image: "/ui3.jpg", 
       bgColor: "bg-gradient-to-r from-gray-50/30 to-stone-100/30",
       textColor: "text-white",
       overlay: "bg-black/40"
