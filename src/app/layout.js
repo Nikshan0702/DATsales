@@ -1,5 +1,5 @@
 import './globals.css';
-import Header from '@/components/Nav/Header';
+// import Header from '@/components/Nav/Header';
 
 export const metadata = {
   title: 'DATshop - Fashion Sales Optimization',
@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
-        <Header />
+        {/* <Header /> */}
         <main className="flex-grow">
           {children}
         </main>
