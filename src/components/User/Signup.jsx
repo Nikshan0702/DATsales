@@ -4,35 +4,98 @@ import Link from 'next/link';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook, FaApple } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function Signup({ onSubmit }) {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [user, Setuser] = useState({
     name: '',
     gender: '',
     address: '',
     email: '',
     phone: '',
     password: '',
-    confirmPassword: '',
-    agreeTerms: false
+    confirmPassword: ''
   });
 
   const handleChange = (e) => {
     const { name, value, checked } = e.target;
-    setFormData(prev => ({
+    Setuser(prev => ({
       ...prev,
       [name]: name === 'agreeTerms' ? checked : value
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
+    
+    // Validate password match
+    if (user.password !== user.confirmPassword) {
+      setError("Passwords don't match");
       return;
     }
-    onSubmit(formData);
+  
+    // Validate password strength
+    if (user.password.length < 8) {
+      setError("Password must be at least 8 characters");
+      return;
+    }
+  
+    // Validate email format
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+  
+    // Validate phone number
+    if (!user.phone) {
+      setError("Phone number is required");
+      return;
+    }
+  
+    setIsLoading(true);
+    setError("");
+  
+    try {
+      const response = await fetch('/api/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: user.name.trim(),
+          gender: user.gender,
+          address: user.address.trim(),
+          email: user.email.trim().toLowerCase(),
+          phone: user.phone.trim(),
+          password: user.password,
+        }),
+      });
+  
+      const text = await response.text();
+      const responseData = text ? JSON.parse(text) : {};
+      
+      if (!response.ok) {
+        throw new Error(
+          responseData.error || 
+          response.statusText || 
+          `Registration failed (status ${response.status})`
+        );
+      }
+  
+      toast.success('Account created successfully!');
+      router.push('/'); // Redirect to login page
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError(error.message);
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,7 +120,7 @@ export default function Signup({ onSubmit }) {
                   type="text"
                   autoComplete="name"
                   required
-                  value={formData.name}
+                  value={user.name}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#E91E63] focus:border-[#E91E63] sm:text-sm"
                 />
@@ -72,7 +135,7 @@ export default function Signup({ onSubmit }) {
                   id="gender"
                   name="gender"
                   required
-                  value={formData.gender}
+                  value={user.gender}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#E91E63] focus:border-[#E91E63] sm:text-sm"
                 >
@@ -95,7 +158,7 @@ export default function Signup({ onSubmit }) {
                   type="email"
                   autoComplete="email"
                   required
-                  value={formData.email}
+                  value={user.email}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#E91E63] focus:border-[#E91E63] sm:text-sm"
                 />
@@ -112,7 +175,7 @@ export default function Signup({ onSubmit }) {
                   type="tel"
                   autoComplete="tel"
                   required
-                  value={formData.phone}
+                  value={user.phone}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#E91E63] focus:border-[#E91E63] sm:text-sm"
                 />
@@ -131,7 +194,7 @@ export default function Signup({ onSubmit }) {
                     autoComplete="new-password"
                     required
                     minLength={8}
-                    value={formData.password}
+                    value={user.password}
                     onChange={handleChange}
                     className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#E91E63] focus:border-[#E91E63] sm:text-sm pr-10"
                   />
@@ -161,7 +224,7 @@ export default function Signup({ onSubmit }) {
                   autoComplete="new-password"
                   required
                   minLength={8}
-                  value={formData.confirmPassword}
+                  value={user.confirmPassword}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#E91E63] focus:border-[#E91E63] sm:text-sm"
                 />
@@ -178,27 +241,27 @@ export default function Signup({ onSubmit }) {
                 name="address"
                 rows={3}
                 required
-                value={formData.address}
+                value={user.address}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#E91E63] focus:border-[#E91E63] sm:text-sm"
               />
             </div>
 
             {/* Terms Checkbox */}
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <input
                 id="agreeTerms"
                 name="agreeTerms"
                 type="checkbox"
                 required
-                checked={formData.agreeTerms}
+                checked={user.agreeTerms}
                 onChange={handleChange}
                 className="h-4 w-4 text-[#E91E63] focus:ring-[#E91E63] border-gray-300 rounded"
               />
               <label htmlFor="agreeTerms" className="ml-2 block text-sm text-gray-700">
                 I agree to the <Link href="/terms" className="text-[#E91E63] hover:text-[#d81b60]">Terms and Conditions</Link>
               </label>
-            </div>
+            </div> */}
           </div>
 
           <div>

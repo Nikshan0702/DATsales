@@ -1,5 +1,8 @@
 import './globals.css';
 // import Header from '@/components/Nav/Header';
+import { Toaster } from 'react-hot-toast';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 export const metadata = {
   title: 'DATshop - Fashion Sales Optimization',
@@ -13,6 +16,8 @@ export default function RootLayout({ children }) {
         {/* <Header /> */}
         <main className="flex-grow">
           {children}
+          <Toaster position="top-right" /> 
+          <ToastContainer position="top-right" />
         </main>
         {/* Footer would go here */}
       </body>
