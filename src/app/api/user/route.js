@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import connectMongoDB from "@/libs/mongodb";
 import User from "@/models/user";
+import bcrypt from 'bcryptjs';
+
 
 
 export async function POST(request) {
@@ -9,7 +11,9 @@ export async function POST(request) {
     
     const { name, gender, address, email, phone, password } = await request.json();
 
-    // Validate required fields
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     if (!name || !email || !password || !phone) {
       return NextResponse.json(
         { error: 'Name, email, phone and password are required' },
@@ -41,7 +45,7 @@ export async function POST(request) {
       address,
       email,
       phone,
-      password
+      password: hashedPassword
     });
 
     await newUser.save();
